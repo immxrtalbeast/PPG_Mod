@@ -7,8 +7,7 @@ namespace Mod
         public static void Main()
         {
             ModAPI.RegisterCategory("Poisoned Weapons", "Make ur bullets be affected by poisons!",
-             ModAPI.LoadSprite("sprites/thumbnails/category.png"));
-
+            ModAPI.LoadSprite("sprites/thumbnails/category.png"));
             ModAPI.Register(
                 new Modification()
                 {
@@ -20,7 +19,8 @@ namespace Mod
                     ThumbnailOverride = ModAPI.LoadSprite("sprites/thumbnails/DaggerView.png"), //Doesn't exist yet!
                     AfterSpawn = (Instance) =>
                     {
-                        Instance.GetComponent<SpriteRenderer>().sprite = ModAPI.LoadSprite("dagger.png"); //Doesn't exist yet!
+                        Instance.AddComponent<DaggerBehaviour>();
+                        Instance.GetComponent<SpriteRenderer>().sprite = ModAPI.LoadSprite("sprites/dagger.png"); //Doesn't exist yet!
                     }
                 }
             );
@@ -120,6 +120,34 @@ namespace Mod
         }
     
 
+
+
+
+
+
+
+    public class DaggerBehaviour : MonoBehaviour
+    {
+        public PhysicalBehaviour physicalBehaviour; 
+        public PhysicalBehaviour.Penetration penet;
+        public bool isActive;
+        
+        // Я ЛЕГЕНДА?
+        private void Update(){
+
+            var victim = GetComponent<PhysicalBehaviour>().penetrations[0].Victim;
+            foreach(var comp in victim.GetComponents<Component>()){
+                if(comp is CirculationBehaviour circ){
+                    var limb = circ.Limb;
+                    Liquid acidLiquid = Liquid.GetLiquid("ACID");
+                    if (limb.SpeciesIdentity == Species.Android)
+                    return;
+                    circ.AddLiquid(acidLiquid, 0.01f);
+                }
+            }
+        }
+
+    }
     public class AcidAttachmentBehaviour : FirearmAttachmentBehaviour
     {
         // Метод, вызываемый при соединении
@@ -151,7 +179,7 @@ namespace Mod
                     return;
 
                     // Добавляем нашу жидкость
-                    circ.AddLiquid(acidLiquid, 1.5f);
+                    circ.AddLiquid(acidLiquid, 0.1f); //1.5
                 }
             }
         }
