@@ -134,19 +134,19 @@ namespace Mod
         
         // Я ЛЕГЕНДА?
         private void Update(){
-
-            var victim = GetComponent<PhysicalBehaviour>().penetrations[0].Victim;
-            foreach(var comp in victim.GetComponents<Component>()){
-                if(comp is CirculationBehaviour circ){
-                    var limb = circ.Limb;
-                    Liquid acidLiquid = Liquid.GetLiquid("ACID");
-                    if (limb.SpeciesIdentity == Species.Android)
-                    return;
-                    circ.AddLiquid(acidLiquid, 0.01f);
+            if (GetComponent<PhysicalBehaviour>().penetrations[0] != null){
+                var victim = GetComponent<PhysicalBehaviour>().penetrations[0].Victim;
+                foreach(var comp in victim.GetComponents<Component>()){
+                    if(comp is CirculationBehaviour circ){
+                        var limb = circ.Limb;
+                        Liquid acidLiquid = Liquid.GetLiquid("ACID");
+                        if (limb.SpeciesIdentity == Species.Android)
+                        return;
+                        circ.AddLiquid(acidLiquid, 0.01f);
+                    }
                 }
             }
         }
-
     }
     public class AcidAttachmentBehaviour : FirearmAttachmentBehaviour
     {
@@ -179,7 +179,7 @@ namespace Mod
                     return;
 
                     // Добавляем нашу жидкость
-                    circ.AddLiquid(acidLiquid, 0.1f); //1.5
+                    circ.AddLiquid(acidLiquid, 1.5f); //1.5
                 }
             }
         }
